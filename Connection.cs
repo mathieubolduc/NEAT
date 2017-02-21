@@ -42,5 +42,10 @@ namespace Neat
         {
             return dest;
         }
+
+        public int getInnovation()
+        {
+            return innovation;
+        }
     }
 }
