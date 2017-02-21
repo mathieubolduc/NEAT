@@ -53,8 +53,8 @@ namespace Neat
 
         public double[] eval(double[] inputs)
         {
-            if (inputs.Length != inputNeurons.Length)
-                throw new ArgumentException("inputs size did not match the number of input neurons");
+            if (inputs.Length - 1 != inputNeurons.Length)
+                throw new ArgumentException("'inputs' size did not match the number of input neurons");
 
             for (int i = 0; i < inputNeurons.Length; i++)
             {
