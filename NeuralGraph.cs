@@ -81,17 +81,17 @@ namespace Neat
             // Clear the 'visited' attribute on all neurons
             foreach (Neuron neuron in outputNeurons)
             {
-                neuron.clearVisited();
+                neuron.clear();
             }
 
             foreach (Neuron neuron in inputNeurons)
             {
-                neuron.clearVisited();
+                neuron.clear();
             }
 
             foreach (Neuron neuron in hiddenNeurons)
             {
-                neuron.clearVisited();
+                neuron.clear();
             }
 
             return outputs;
@@ -99,7 +99,7 @@ namespace Neat
 
         private double evalNeuron(Neuron neuron)
         {
-            HashSet<Connection> inputs = neuron.getInputs();
+            Dictionary<Neuron, Connection> inputs = connections[neuron];
             if (inputs.Count == 0) // This means the neuron is of type 'Input'
             {
                 return neuron.getValue();
@@ -108,7 +108,7 @@ namespace Neat
             neuron.visit();
 
             double sum = 0;
-            foreach (Connection connection in inputs)
+            foreach (Connection connection in inputs.Values)
             {
                 Neuron source = connection.getSource();
                 if (!source.isVisited())
@@ -133,10 +133,12 @@ namespace Neat
         public void addConnection(Connection connection)
         {
             // Update dictionary
-            Dictionary<Neuron, Connection> foo;
-            connections.TryGetValue(connection.getDest(), out foo);
-            foo.Add(connection.getSource(), connection);
-            connection.getDest().addInput(connection);
+            Neuron dest = connection.getDest();
+            if (!connections.ContainsKey(dest))
+            {
+                connections.Add(dest, new Dictionary<Neuron, Connection>());
+            }
+            connections[dest].Add(connection.getSource(), connection);
 
             // Update List
             connectionList.Add(connection);
@@ -167,5 +169,6 @@ namespace Neat
         {
             return connectionList;
         }
+        
     }
 }
