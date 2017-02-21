@@ -32,7 +32,7 @@ namespace Neat
             // Add neurons from both parents
             List<Connection>.Enumerator it1 = graph1.getConnectionList().GetEnumerator();
             List<Connection>.Enumerator it2 = graph2.getConnectionList().GetEnumerator();
-            bool hasNext1 = true, hasNext2 = true;
+            bool hasNext1 = it1.MoveNext(), hasNext2 = it2.MoveNext();
 
             while (hasNext1 || hasNext2)
             {
@@ -111,7 +111,7 @@ namespace Neat
             int weightCntr = 0;
             List<Connection>.Enumerator it1 = connections.GetEnumerator();
             List<Connection>.Enumerator it2 = otherConnections.GetEnumerator();
-            bool hasNext1 = true, hasNext2 = true;
+            bool hasNext1 = it1.MoveNext(), hasNext2 = it2.MoveNext();
 
             while (hasNext1 || hasNext2)
             {
@@ -155,6 +155,10 @@ namespace Neat
         public NeuralGraph getGraph()
         {
             return graph;
+        }
+
+        public override string ToString() {
+            return graph.ToString();
         }
 
     }

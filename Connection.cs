@@ -58,5 +58,9 @@ namespace Neat
         {
             disabled = true;
         }
+
+        public override string ToString() {
+            return (source.GetHashCode() + " --> " + dest.GetHashCode());
+        }
     }
 }

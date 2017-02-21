@@ -169,6 +169,17 @@ namespace Neat
         {
             return connectionList;
         }
-        
+
+        public override string ToString() {
+            string output = "";
+
+            output += (inputNeurons.Length + " inputs and " + outputNeurons.Length + " outputs\n");
+            foreach (Connection connection in connectionList) {
+                output += connection.ToString() + "\n";
+            }
+
+            return output;
+        }
+
     }
 }
