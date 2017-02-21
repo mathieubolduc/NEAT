@@ -75,9 +75,19 @@ namespace Neat
             }
 
             // Clear the 'visited' attribute on all neurons
-            foreach (Neuron outputNeuron in outputNeurons)
+            foreach (Neuron neuron in outputNeurons)
             {
-                clearVisitedNeurons(outputNeuron);
+                neuron.clearVisited();
+            }
+
+            foreach (Neuron neuron in inputNeurons)
+            {
+                neuron.clearVisited();
+            }
+
+            foreach (Neuron neuron in hiddenNeurons)
+            {
+                neuron.clearVisited();
             }
 
             return outputs;
@@ -109,18 +119,6 @@ namespace Neat
             neuron.setValue(sum);
 
             return sum;
-        }
-
-        private void clearVisitedNeurons(Neuron neuron)
-        {
-            if (neuron.isVisited())
-                return;
-
-            neuron.clearVisited();
-            foreach (Connection connection in neuron.getInputs())
-            {
-                clearVisitedNeurons(connection.getSource());
-            }
         }
 
         public void addHiddenNeuron(Neuron neuron)
