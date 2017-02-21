@@ -10,6 +10,8 @@ namespace Neat
 
     class Neuron
     {
+        private static int innovation_cntr = 0; // TODO consider changing this to 'long'
+
         private double value = 0;
         private NeuronType type;
         private HashSet<Connection> inputs = new HashSet<Connection>(); // Using a hashset prevents having duplicate connections

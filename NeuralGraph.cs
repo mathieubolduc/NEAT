@@ -52,9 +52,9 @@ namespace Neat
             
             if (connections != null)
             {
-                foreach (KeyValuePair<Neuron, Dictionary<Neuron, Connection>> dummy in connections)
+                foreach (KeyValuePair<Neuron, Dictionary<Neuron, Connection>> foo in connections)
                 {
-                    foreach (KeyValuePair<Neuron, Connection> in dummy)
+                    foreach (KeyValuePair<Neuron, Connection> in foo)
                     {
 
                     }
@@ -92,7 +92,7 @@ namespace Neat
             inputNeurons[inputNeurons.Length - 1].setValue(1);
 
             double[] outputs = new double[outputNeurons.Length];
-           // int counter = 0;
+            int counter = 0;
             foreach (Neuron outputNeuron in outputNeurons)
             {
                 outputs[counter++] = evalNeuron(outputNeuron); // Note that calling this method multiple times is not inefficient since the 'visited' attribute is not reset
@@ -153,9 +153,9 @@ namespace Neat
         public void addConnection(Connection connection)
         {
             // Update dictionary
-            Dictionary<Neuron, Connection> dummy;
-            connections.TryGetValue(connection.getSource(), out dummy);
-            dummy.Add(connection.getDest(), connection);
+            Dictionary<Neuron, Connection> foo;
+            connections.TryGetValue(connection.getSource(), out foo);
+            foo.Add(connection.getDest(), connection);
             connection.getDest().addInput(connection);
 
             // Update List

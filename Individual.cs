@@ -21,9 +21,16 @@ namespace Neat
 
         }
 
-        public void cross(Individual indiv, float disableGeneProb)
+        public Individual cross(Individual parent1, Individual parent2, float disableGeneProb)
         {
+            NeuralGraph graph1 = parent1.getGraph();
+            NeuralGraph graph2 = parent2.getGraph();
+            NeuralGraph child = new NeuralGraph(graph1.getInputNeurons().Length, graph1.getOutputNeurons().Length);
 
+            // Add neurons from both parents
+            List<Neuron>.Enumerator it1 = graph1.getHiddenNeurons().GetEnumerator();
+            List<Neuron>.Enumerator it2 = graph2.getHiddenNeurons().GetEnumerator();
+            
         }
 
         public double distanceFrom(Individual indiv, float c1, float c2, float c3)

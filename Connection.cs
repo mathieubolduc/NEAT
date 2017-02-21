@@ -14,6 +14,7 @@ namespace Neat
         private Neuron source, dest;
         private double weight;
         private int innovation;
+        private Boolean disabled = false;
 
         public Connection(Neuron source, Neuron dest)
         {
@@ -46,6 +47,16 @@ namespace Neat
         public int getInnovation()
         {
             return innovation;
+        }
+
+        public Boolean isDisabled()
+        {
+            return disabled;
+        }
+
+        public void disable()
+        {
+            disabled = true;
         }
     }
 }
