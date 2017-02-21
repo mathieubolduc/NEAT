@@ -21,7 +21,7 @@ namespace Neat
 
         }
 
-        public Individual cross(Individual parent1, Individual parent2, float disableGeneProb)
+        public static Individual cross(Individual parent1, Individual parent2, float disableGeneProb)
         {
             NeuralGraph graph1 = parent1.getGraph();
             NeuralGraph graph2 = parent2.getGraph();
