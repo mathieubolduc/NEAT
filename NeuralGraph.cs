@@ -65,8 +65,18 @@ namespace Neat
             return graph;
         }
 
-        public double[] eval()
+        public double[] eval(double[] inputs)
         {
+            if (inputs.Length != inputNeurons.Length)
+                throw new ArgumentException("inputs size did not match the number of input neurons");
+
+            for (int i = 0; i < inputNeurons.Length; i++)
+            {
+                inputNeurons[i].setValue(inputs[i]);
+            }
+            // Bias input:
+            inputNeurons[inputNeurons.Length - 1].setValue(1);
+
             double[] outputs = new double[outputNeurons.Length];
             int counter = 0;
             foreach (Neuron outputNeuron in outputNeurons)
