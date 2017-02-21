@@ -28,8 +28,8 @@ namespace Neat
 
         public double distanceFrom(Individual indiv, float c1, float c2, float c3)
         {
-            List<Connection> connections = graph.getConnections();
-            List<Connection> otherConnections = indiv.getGraph().getConnections();
+            List<Connection> connections = graph.getConnectionList();
+            List<Connection> otherConnections = indiv.getGraph().getConnectionList();
             int N = Math.Max(connections.Count, otherConnections.Count);
 
             int D = 0, E = 0; // Number of Disjoint (D) and Excess (E) connections

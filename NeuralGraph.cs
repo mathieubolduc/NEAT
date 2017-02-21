@@ -8,11 +8,17 @@ namespace Neat
 {
     class NeuralGraph
     {
+
+        // Neurons
         private List<Neuron> hiddenNeurons = new List<Neuron>();
         private Neuron[] inputNeurons;
         private Neuron[] outputNeurons;
-        private List<Connection> connections = new List<Connection>();
 
+        // Connections
+        private Dictionary<Neuron, Dictionary<Neuron, Connection>> connections;     // 1st key = source, 2nd key = dest
+        private List<Connection> connectionList;                                    // sorted by inno #
+
+        // Constructs an empty neuralGraph
         public NeuralGraph(int nbInputs, int nbOutputs) {
             inputNeurons = new Neuron[nbInputs];
             outputNeurons = new Neuron[nbOutputs];
@@ -25,9 +31,13 @@ namespace Neat
             {
                 outputNeurons[i] = new Neuron(NeuronType.Output);
             }
+
+            connections = new Dictionary<Neuron, Dictionary<Neuron, Connection>>();
+            connectionList = new List<Connection>();
         }
 
-        public NeuralGraph(Neuron[] inputNeurons, Neuron[] outputNeurons, List<Neuron> hiddenNeurons, List<Connection> connections)
+        // TODO reformat as NeuralGraph(NeuralGraph neuralGraph) for simplicity or just trash it?
+        public NeuralGraph(Neuron[] inputNeurons, Neuron[] outputNeurons, List<Neuron> hiddenNeurons, Dictionary<Neuron, Dictionary<Neuron, Connection>> connections)
         {
             this.inputNeurons = inputNeurons;
             this.outputNeurons = outputNeurons;
@@ -42,8 +52,12 @@ namespace Neat
             
             if (connections != null)
             {
-                foreach (Connection connection in connections)
+                foreach (KeyValuePair<Neuron, Dictionary<Neuron, Connection>> dummy in connections)
                 {
+                    foreach (KeyValuePair<Neuron, Connection> in dummy)
+                    {
+
+                    }
                     addConnection(connection);
                 }
             }
@@ -78,7 +92,7 @@ namespace Neat
             inputNeurons[inputNeurons.Length - 1].setValue(1);
 
             double[] outputs = new double[outputNeurons.Length];
-            int counter = 0;
+           // int counter = 0;
             foreach (Neuron outputNeuron in outputNeurons)
             {
                 outputs[counter++] = evalNeuron(outputNeuron); // Note that calling this method multiple times is not inefficient since the 'visited' attribute is not reset
@@ -138,8 +152,15 @@ namespace Neat
 
         public void addConnection(Connection connection)
         {
-            connections.Add(connection);
+            // Update dictionary
+            Dictionary<Neuron, Connection> dummy;
+            connections.TryGetValue(connection.getSource(), out dummy);
+            dummy.Add(connection.getDest(), connection);
             connection.getDest().addInput(connection);
+
+            // Update List
+            connectionList.Add(connection);
+
         }
 
         public Neuron[] getOutputNeurons()
@@ -157,9 +178,14 @@ namespace Neat
             return hiddenNeurons;
         }
 
-        public List<Connection> getConnections()
+        public Dictionary<Neuron, Dictionary<Neuron, Connection>> getConnections()
         {
             return connections;
+        }
+
+        public List<Connection> getConnectionList()
+        {
+            return connectionList;
         }
     }
 }
