@@ -36,34 +36,6 @@ namespace Neat
             connectionList = new List<Connection>();
         }
 
-        // TODO reformat as NeuralGraph(NeuralGraph neuralGraph) for simplicity or just trash it?
-        public NeuralGraph(Neuron[] inputNeurons, Neuron[] outputNeurons, List<Neuron> hiddenNeurons, Dictionary<Neuron, Dictionary<Neuron, Connection>> connections)
-        {
-            this.inputNeurons = inputNeurons;
-            this.outputNeurons = outputNeurons;
-
-            if (hiddenNeurons != null)
-            {
-                foreach (Neuron neuron in hiddenNeurons)
-                {
-                    addHiddenNeuron(neuron);
-                }
-            }
-            
-            if (connections != null)
-            {
-                foreach (KeyValuePair<Neuron, Dictionary<Neuron, Connection>> foo in connections)
-                {
-                    foreach (KeyValuePair<Neuron, Connection> in foo)
-                    {
-
-                    }
-                    addConnection(connection);
-                }
-            }
-            
-        }
-
         public static NeuralGraph generateFullyConnected(int nbInputs, int nbOutputs)
         {
             NeuralGraph graph = new NeuralGraph(nbInputs, nbOutputs);
