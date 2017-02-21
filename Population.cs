@@ -17,7 +17,7 @@ namespace Neat
 
             for (int i = 0; i < individuals.Length; i++)
             {
-                individuals[i] = new Individual(NeuralGraph.generateFullyConnected(nbInputs, nbOutputs));
+                individuals[i] = new Individual(NeuralGraph.generateFullyConnected(nbInputs + 1, nbOutputs)); // Add a bias input
             }
         }
     }
