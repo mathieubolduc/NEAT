@@ -25,12 +25,79 @@ namespace Neat
         {
             NeuralGraph graph1 = parent1.getGraph();
             NeuralGraph graph2 = parent2.getGraph();
-            NeuralGraph child = new NeuralGraph(graph1.getInputNeurons().Length, graph1.getOutputNeurons().Length);
+
+            Dictionary<Neuron, Neuron> addedNeurons = new Dictionary<Neuron, Neuron>();
+            NeuralGraph child = new NeuralGraph(graph1.getInputNeurons(), graph1.getOutputNeurons());
 
             // Add neurons from both parents
-            List<Neuron>.Enumerator it1 = graph1.getHiddenNeurons().GetEnumerator();
-            List<Neuron>.Enumerator it2 = graph2.getHiddenNeurons().GetEnumerator();
+            List<Connection>.Enumerator it1 = graph1.getConnectionList().GetEnumerator();
+            List<Connection>.Enumerator it2 = graph2.getConnectionList().GetEnumerator();
+            bool hasNext1 = true, hasNext2 = true;
+
+            while (hasNext1 || hasNext2)
+            {
+                if (!hasNext1)
+                {
+                    addConnectionInCross(it2.Current, child, addedNeurons);
+                    hasNext2 = it2.MoveNext();
+                    continue;
+                }
+                if (!hasNext2)
+                {
+                    addConnectionInCross(it1.Current, child, addedNeurons);
+                    hasNext1 = it1.MoveNext();
+                    continue;
+                }
+
+                int innov1 = it1.Current.getInnovation();
+                int innov2 = it2.Current.getInnovation();
+                if (innov1 == innov2)
+                {
+                    addConnectionInCross(it1.Current, child, addedNeurons);
+                    hasNext1 = it1.MoveNext();
+                    hasNext2 = it2.MoveNext();
+                }
+                else if (innov1 > innov2)
+                {
+                    addConnectionInCross(it2.Current, child, addedNeurons);
+                    hasNext2 = it2.MoveNext();
+                }
+                else
+                {
+                    addConnectionInCross(it1.Current, child, addedNeurons);
+                    hasNext1 = it1.MoveNext();
+                }
+            }   
+
+            return new Individual(child);
+        }
+
+        private static void addConnectionInCross(Connection connection, NeuralGraph child, Dictionary<Neuron, Neuron> addedNeurons)
+        {
+            Neuron[] oldNeurons = new Neuron[] { connection.getSource(), connection.getDest() };
+            Neuron[] newNeurons = new Neuron[oldNeurons.Length];
+
+            for (int i = 0; i < oldNeurons.Length; i++)
+            {
+                if (oldNeurons[i].getType() != NeuronType.Hidden)
+                {
+                    // TODO !Important! If we allow recurrent connections on outputs, need to clone the outputs too
+                    newNeurons[i] = oldNeurons[i];
+                    continue;
+                }
+                if (!addedNeurons.ContainsKey(oldNeurons[i]))
+                {
+                    newNeurons[i] = oldNeurons[i].clone();
+                    addedNeurons.Add(oldNeurons[i], newNeurons[i]);
+                    child.addHiddenNeuron(newNeurons[i]);
+                }
+                else
+                {
+                    newNeurons[i] = addedNeurons[oldNeurons[i]];
+                }
+            }
             
+            child.addConnection(new Connection(newNeurons[0], newNeurons[1]));
         }
 
         public double distanceFrom(Individual indiv, float c1, float c2, float c3)

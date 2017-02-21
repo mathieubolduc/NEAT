@@ -58,5 +58,11 @@ namespace Neat
         {
             visited = false;
         }
+
+        public Neuron clone()
+        {
+            Neuron n = new Neuron(type);
+            return n;
+        }
     }
 }

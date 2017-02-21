@@ -36,6 +36,14 @@ namespace Neat
             connectionList = new List<Connection>();
         }
 
+        public NeuralGraph(Neuron[] inputNeurons, Neuron[] outputNeurons)
+        {
+            this.inputNeurons = inputNeurons;
+            this.outputNeurons = outputNeurons;
+            connections = new Dictionary<Neuron, Dictionary<Neuron, Connection>>();
+            connectionList = new List<Connection>();
+        }
+
         public static NeuralGraph generateFullyConnected(int nbInputs, int nbOutputs)
         {
             NeuralGraph graph = new NeuralGraph(nbInputs, nbOutputs);
