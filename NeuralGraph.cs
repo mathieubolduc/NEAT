@@ -91,8 +91,7 @@ namespace Neat
 
         private double evalNeuron(Neuron neuron)
         {
-            Dictionary<Neuron, Connection> inputs;
-            connections.TryGetValue(neuron ,out inputs);
+            Dictionary<Neuron, Connection> inputs = connections[neuron];
             if (inputs.Count == 0) // This means the neuron is of type 'Input'
             {
                 return neuron.getValue();
@@ -126,9 +125,12 @@ namespace Neat
         public void addConnection(Connection connection)
         {
             // Update dictionary
-            Dictionary<Neuron, Connection> inputs;
-            connections.TryGetValue(connection.getDest(), out inputs);
-            inputs.Add(connection.getSource(), connection);
+            Neuron dest = connection.getDest();
+            if (!connections.ContainsKey(dest))
+            {
+                connections.Add(dest, new Dictionary<Neuron, Connection>());
+            }
+            connections[dest].Add(connection.getSource(), connection);
 
             // Update List
             connectionList.Add(connection);
