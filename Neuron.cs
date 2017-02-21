@@ -14,7 +14,6 @@ namespace Neat
 
         private double value = 0;
         private NeuronType type;
-        private HashSet<Connection> inputs = new HashSet<Connection>(); // Using a hashset prevents having duplicate connections
         private bool visited = false;
 
         public Neuron(NeuronType type)
@@ -43,11 +42,6 @@ namespace Neat
         public NeuronType getType()
         {
             return type;
-        }
-
-        public HashSet<Connection> getInputs()
-        {
-            return inputs;
         }
 
         public void visit()

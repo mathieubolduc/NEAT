@@ -15,7 +15,7 @@ namespace Neat
         private Neuron[] outputNeurons;
 
         // Connections
-        private Dictionary<Neuron, Dictionary<Neuron, Connection>> connections;     // 1st key = source, 2nd key = dest
+        private Dictionary<Neuron, Dictionary<Neuron, Connection>> connections;     // 1st key = dest, 2nd key = source
         private List<Connection> connectionList;                                    // sorted by inno #
 
         // Constructs an empty neuralGraph
@@ -126,8 +126,8 @@ namespace Neat
         {
             // Update dictionary
             Dictionary<Neuron, Connection> foo;
-            connections.TryGetValue(connection.getSource(), out foo);
-            foo.Add(connection.getDest(), connection);
+            connections.TryGetValue(connection.getDest(), out foo);
+            foo.Add(connection.getSource(), connection);
             connection.getDest().addInput(connection);
 
             // Update List

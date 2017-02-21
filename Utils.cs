@@ -25,5 +25,14 @@ namespace Neat
         {
             return 1 / (1 + Math.Exp(-4.9*x));
         }
+
+        public static Connection get(NeuralGraph neuralGraph, Neuron Source, Neuron dest)
+        {
+            Dictionary<Neuron, Connection> foo;
+            neuralGraph.getConnections().TryGetValue(dest, out foo);
+            Connection bar;
+            foo.TryGetValue(dest, out bar);
+            return bar;
+        }
     }
 }
