@@ -44,9 +44,10 @@ namespace Neat
             return visited;
         }
 
-        public void clearVisited()
+        public void clear()
         {
             visited = false;
+            value = 0;
         }
     }
 }

@@ -73,17 +73,17 @@ namespace Neat
             // Clear the 'visited' attribute on all neurons
             foreach (Neuron neuron in outputNeurons)
             {
-                neuron.clearVisited();
+                neuron.clear();
             }
 
             foreach (Neuron neuron in inputNeurons)
             {
-                neuron.clearVisited();
+                neuron.clear();
             }
 
             foreach (Neuron neuron in hiddenNeurons)
             {
-                neuron.clearVisited();
+                neuron.clear();
             }
 
             return outputs;
