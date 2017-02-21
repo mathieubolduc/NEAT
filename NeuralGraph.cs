@@ -91,7 +91,8 @@ namespace Neat
 
         private double evalNeuron(Neuron neuron)
         {
-            HashSet<Connection> inputs = neuron.getInputs();
+            Dictionary<Neuron, Connection> inputs;
+            connections.TryGetValue(neuron ,out inputs);
             if (inputs.Count == 0) // This means the neuron is of type 'Input'
             {
                 return neuron.getValue();
@@ -100,7 +101,7 @@ namespace Neat
             neuron.visit();
 
             double sum = 0;
-            foreach (Connection connection in inputs)
+            foreach (Connection connection in inputs.Values)
             {
                 Neuron source = connection.getSource();
                 if (!source.isVisited())
@@ -125,10 +126,9 @@ namespace Neat
         public void addConnection(Connection connection)
         {
             // Update dictionary
-            Dictionary<Neuron, Connection> foo;
-            connections.TryGetValue(connection.getDest(), out foo);
-            foo.Add(connection.getSource(), connection);
-            connection.getDest().addInput(connection);
+            Dictionary<Neuron, Connection> inputs;
+            connections.TryGetValue(connection.getDest(), out inputs);
+            inputs.Add(connection.getSource(), connection);
 
             // Update List
             connectionList.Add(connection);
@@ -159,5 +159,6 @@ namespace Neat
         {
             return connectionList;
         }
+        
     }
 }

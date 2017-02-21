@@ -10,8 +10,6 @@ namespace Neat
 
     class Neuron
     {
-        private static int innovation_cntr = 0; // TODO consider changing this to 'long'
-
         private double value = 0;
         private NeuronType type;
         private bool visited = false;
@@ -19,14 +17,6 @@ namespace Neat
         public Neuron(NeuronType type)
         {
             this.type = type;
-        }
-
-        public bool addInput(Connection connection)
-        {
-            if (type == NeuronType.Input)
-                throw new InvalidOperationException("An Input neuron cannot have inputs");
-
-            return inputs.Add(connection); // Returns false if the connection already exists
         }
 
         public void setValue(double value)
