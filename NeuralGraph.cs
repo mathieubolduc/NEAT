@@ -96,15 +96,14 @@ namespace Neat
             {
                 neuron.clear();
             }
-
+            
             return outputs;
         }
 
         private double evalNeuron(Neuron neuron)
         {
-            Dictionary<Neuron, Connection> inputs = connections[neuron];
-            if (inputs.Count == 0) // This means the neuron is of type 'Input'
-            {
+            Dictionary<Neuron, Connection> inputs;
+            if (!connections.TryGetValue(neuron, out inputs)) { // This means the neuron is of type 'Input'
                 return neuron.getValue();
             }
 
