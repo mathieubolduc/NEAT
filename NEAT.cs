@@ -33,9 +33,20 @@ namespace Neat
 
         // TODO constructor allowing to change settings or, alternately, a Config object
 
-        public Individual runUntil(Func<Individual, double> fitnessFunc, double desiredFitness)
+        public Individual runUntil(double desiredFitness, Func<Individual, double> fitnessFunc)
         {
-            // TODO
+            Tuple<Individual, double> currentFitness = population.getMaxFitness(fitnessFunc);
+            Console.WriteLine(currentFitness.Item2);
+            while (currentFitness.Item2 < desiredFitness) {
+                // Create a new generation
+                generation++;
+                population.newGeneration();
+                currentFitness = population.getMaxFitness(fitnessFunc);
+                Console.WriteLine(currentFitness.Item2);
+
+                if (generation == 20)
+                    break;
+            }
             return null;
         }
     }

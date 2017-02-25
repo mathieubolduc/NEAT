@@ -9,6 +9,7 @@ namespace Neat
     class Individual
     {
         private NeuralGraph graph;
+        private double fitness;
 
         public Individual(NeuralGraph graph)
         {
@@ -151,6 +152,18 @@ namespace Neat
             }
 
             return (c1 * E) / N + (c2 * D) / N + (c3 * W) / weightCntr;
+        }
+
+        public double[] eval(double[] inputs) {
+            return graph.eval(inputs);
+        }
+
+        public double getFitness() {
+            return fitness;
+        }
+
+        public void setFitness(double fitness) {
+            this.fitness = fitness;
         }
 
         public NeuralGraph getGraph()
