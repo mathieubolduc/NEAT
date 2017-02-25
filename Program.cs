@@ -8,20 +8,29 @@ namespace Neat
 {
     class Program
     {
-        static void Main(string[] args)
-        {
-           // NEAT neat = new NEAT(2, 1);
+        static void Main(string[] args) {
 
-            Individual i1 = new Individual(NeuralGraph.generateFullyConnected(2, 1));
-            Individual i2 = new Individual(NeuralGraph.generateFullyConnected(2, 1));
-            Individual child = Individual.cross(i1, i2, 0.75f);
+            // NEAT XOR Test
 
-            Console.WriteLine("Individual 1:");
-            Console.WriteLine(i1);
-            Console.WriteLine("Individual 2:");
-            Console.WriteLine(i2);
-            Console.WriteLine("Child:");
-            Console.WriteLine(child);
+            NEAT neat = new NEAT(2, 1);
+
+            neat.runUntil(15.95, (indiv) => {
+                double[][] inputs = {
+                    new double[] { 0, 0 },
+                    new double[] { 0, 1 },
+                    new double[] { 1, 0 },
+                    new double[] { 1, 1 }
+                };
+                double[] expectedOutput = new double[] { 0, 1, 1, 0 };
+
+                double fitness = 0;
+
+                for (int i = 0; i < 4; i++) {
+                    fitness += Math.Abs(expectedOutput[i] - indiv.eval(inputs[i])[0]);
+                }
+
+                return Math.Pow(4 - fitness, 2);
+            });
 
             if (System.Diagnostics.Debugger.IsAttached)
             {
