@@ -16,11 +16,12 @@ namespace Neat
         private int innovation;
         private bool disabled = false;
 
-        public Connection(Neuron source, Neuron dest)
-        {
+        public Connection(Neuron source, Neuron dest) : this(source, dest, innovation_cntr++) { }
+
+        public Connection(Neuron source, Neuron dest, int innovation) {
             this.source = source;
             this.dest = dest;
-            innovation = innovation_cntr++;
+            this.innovation = innovation;
             weight = Utils.nextGaussian(0, 1);
         }
 

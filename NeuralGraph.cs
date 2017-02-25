@@ -48,11 +48,14 @@ namespace Neat
         {
             NeuralGraph graph = new NeuralGraph(nbInputs, nbOutputs);
 
+            // Use specific innovation numbers such that all graphs created through this method are identical
+            int innovation = 0;
+
             foreach (Neuron input in graph.getInputNeurons())
             {
                 foreach (Neuron output in graph.getOutputNeurons())
                 {
-                    graph.addConnection(new Connection(input, output));
+                    graph.addConnection(new Connection(input, output, innovation++));
                 }
             }
 
