@@ -61,7 +61,7 @@ namespace Neat
         }
 
         public override string ToString() {
-            return (source.GetHashCode() + " --> " + dest.GetHashCode());
+            return (source.GetHashCode() + " --(" + weight + ")--> " + dest.GetHashCode());
         }
     }
 }
