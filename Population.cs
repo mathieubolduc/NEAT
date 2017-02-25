@@ -8,13 +8,16 @@ namespace Neat
 {
     class Population
     {
+        private NEATConfig config;
         private Individual[] individuals;
         private int generation;
 
-        public Population(int populationSize, int nbInputs, int nbOutputs)
+        public Population(int nbInputs, int nbOutputs, NEATConfig config)
         {
+            this.config = config;
+
             // Initialize a population with the input and output layers fully connected
-            individuals = new Individual[populationSize];
+            individuals = new Individual[config.populationSize];
 
             for (int i = 0; i < individuals.Length; i++)
             {

@@ -11,8 +11,8 @@ namespace Neat
         static void Main(string[] args) {
 
             // NEAT XOR Test
-
-            NEAT neat = new NEAT(2, 1);
+            NEATConfig config = new NEATConfig();
+            NEAT neat = new NEAT(2, 1, config);
 
             neat.runUntil(15.95, (indiv) => {
                 double[][] inputs = {
