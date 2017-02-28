@@ -61,7 +61,12 @@ namespace Neat
             int counter = 0;
             // Generate representatives for each species and clear species from the previous generation
             foreach (Species singleSpecies in species) {
-                representatives.Add(singleSpecies.getRandomIndividual(), singleSpecies);
+                Individual randomIndiv = singleSpecies.getRandomIndividual();
+                if (randomIndiv == null) {
+                    // TODO delete the species as it is empty
+                    continue;
+                }
+                representatives.Add(randomIndiv, singleSpecies);
                 singleSpecies.clear();
                 counter++;
             }
