@@ -15,16 +15,15 @@ namespace Neat
         {
             this.graph = graph;
         }
-
-        // TODO do we want to return a new individual or modify this one?
-        public void mutate(float newNodeProb, float newConnectionProb)
+        
+        public void mutate(NEATConfig config)
         {
 
         }
 
-        public static Individual cross(Individual parent1, Individual parent2, float disableGeneProb)
+        public static Individual cross(Individual parent1, Individual parent2, NEATConfig config)
         {
-            // TODO handle disabled connection
+            // TODO handle disabled connection (use config.disableGeneProb)
             NeuralGraph graph1 = parent1.getGraph();
             NeuralGraph graph2 = parent2.getGraph();
 
@@ -102,7 +101,7 @@ namespace Neat
             child.addConnection(new Connection(newNeurons[0], newNeurons[1]));
         }
 
-        public double distanceFrom(Individual indiv, float c1, float c2, float c3)
+        public double distanceFrom(Individual indiv, NEATConfig config)
         {
             List<Connection> connections = graph.getConnectionList();
             List<Connection> otherConnections = indiv.getGraph().getConnectionList();
@@ -151,7 +150,7 @@ namespace Neat
                 }
             }
 
-            return (c1 * E) / N + (c2 * D) / N + (c3 * W) / weightCntr;
+            return (config.c1 * E) / N + (config.c2 * D) / N + (config.c3 * W) / weightCntr;
         }
 
         public double[] eval(double[] inputs) {

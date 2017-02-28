@@ -43,6 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="NEATConfig.cs" />
     <Compile Include="NeuralGraph.cs" />
     <Compile Include="Connection.cs" />
     <Compile Include="Neuron.cs" />

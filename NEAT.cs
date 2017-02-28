@@ -22,8 +22,6 @@ namespace Neat
             Console.WriteLine("Done");
         }
 
-        // TODO constructor allowing to change settings or, alternately, a Config object
-
         public Individual runUntil(double desiredFitness, Func<Individual, double> fitnessFunc)
         {
             Tuple<Individual, double> currentFitness = population.getMaxFitness(fitnessFunc);
