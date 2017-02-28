@@ -44,7 +44,14 @@ namespace Neat
 
         public void newGeneration() {
             foreach(Individual indiv in individuals) {
-                // TODO
+                // TODO remove stagnant species (config.timeToKillStagnant)
+                // TODO pick champions of each species
+                // TODO crossover within and outside of species
+
+                indiv.mutate(config);
+
+                // TODO match innovation numbers between individuals
+                // TODO speciate
             }
         }
     }

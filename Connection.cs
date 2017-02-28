@@ -60,6 +60,10 @@ namespace Neat
             disabled = true;
         }
 
+        public void enable() {
+            disabled = false;
+        }
+
         public override string ToString() {
             return (source.GetHashCode() + " --(" + weight + ")--> " + dest.GetHashCode());
         }

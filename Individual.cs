@@ -18,7 +18,67 @@ namespace Neat
         
         public void mutate(NEATConfig config)
         {
+            if (Utils.rand.NextDouble() < config.newConnectionProb) {
+                // Select two random neurons and create (or enable) a link in-between
+                int hiddenCount = graph.getHiddenNeurons().Count();
+                int inputCount = graph.getInputNeurons().Count();
+                int outputCount = graph.getOutputNeurons().Count();
 
+                // Select the input and output neurons
+                int sourceIndex = Utils.rand.Next(hiddenCount + inputCount + outputCount);
+                int destIndex = Utils.rand.Next(hiddenCount + outputCount);
+                Neuron source, dest;
+
+                if (sourceIndex < hiddenCount) {
+                    source = graph.getHiddenNeurons()[sourceIndex];
+                }
+                else if (sourceIndex < hiddenCount + inputCount) {
+                    source = graph.getInputNeurons()[sourceIndex - hiddenCount];
+                }
+                else {
+                    source = graph.getOutputNeurons()[sourceIndex - hiddenCount - inputCount];
+                }
+
+                if (destIndex < hiddenCount) {
+                    dest = graph.getHiddenNeurons()[destIndex];
+                }
+                else {
+                    dest = graph.getOutputNeurons()[destIndex - hiddenCount];
+                }
+
+                Connection connection;
+                if (!graph.getConnections()[dest].TryGetValue(source, out connection)) {
+                    connection = new Connection(source, dest);
+                    graph.addConnection(connection);
+                }
+                else {
+                    connection.enable();
+                }
+            }
+
+            if (Utils.rand.NextDouble() < config.newNodeProb) {
+                // When adding a node, disable a connection and replace it by a neuron and two connections
+                // The new input connection to that neuron has weight of 1, while output has same weight as disabled connection
+                Connection connection = graph.getConnectionList()[Utils.rand.Next(graph.getConnectionList().Count)];
+                connection.disable();
+                Neuron neuron = new Neuron(NeuronType.Hidden);
+                Connection newConn1 = new Connection(connection.getSource(), neuron);
+                Connection newConn2 = new Connection(neuron, connection.getDest());
+                graph.addHiddenNeuron(neuron);
+                graph.addConnection(newConn1);
+                graph.addConnection(newConn2);
+            }
+
+            foreach (Connection connection in graph.getConnectionList()) {
+                if (Utils.rand.NextDouble() < config.mutationProb) {
+                    if (Utils.rand.NextDouble() < config.uniformPerturbationMutationProb) {
+                        connection.setWeight(connection.getWeight() + Utils.rand.NextDouble() * 2 * config.perturbationStep - config.perturbationStep);
+                    }
+                    else {
+                        connection.setWeight(Utils.nextGaussian(0, 1));
+                    }
+                }
+            }
         }
 
         public static Individual cross(Individual parent1, Individual parent2, NEATConfig config)
