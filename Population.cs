@@ -10,6 +10,7 @@ namespace Neat
     {
         private NEATConfig config;
         private Individual[] individuals;
+        private List<Species> species = new List<Species>();
         private int generation;
 
         public Population(int nbInputs, int nbOutputs, NEATConfig config)
@@ -44,6 +45,7 @@ namespace Neat
 
         public void newGeneration() {
             foreach(Individual indiv in individuals) {
+                speciate();
                 // TODO remove stagnant species (config.timeToKillStagnant)
                 // TODO pick champions of each species
                 // TODO crossover within and outside of species
@@ -51,7 +53,37 @@ namespace Neat
                 indiv.mutate(config);
 
                 // TODO match innovation numbers between individuals
-                // TODO speciate
+            }
+        }
+
+        public void speciate() {
+            Dictionary<Individual, Species> representatives = new Dictionary<Individual, Species>();
+            int counter = 0;
+            // Generate representatives for each species and clear species from the previous generation
+            foreach (Species singleSpecies in species) {
+                representatives.Add(singleSpecies.getRandomIndividual(), singleSpecies);
+                singleSpecies.clear();
+                counter++;
+            }
+
+            // Put each individual in a species
+            foreach (Individual indiv in individuals) {
+                bool speciesFound = false;
+                foreach (KeyValuePair<Individual, Species> representative in representatives) {
+                    if (representative.Key.distanceFrom(indiv, config) <= config.speciesDistance) {
+                        representative.Value.addIndividual(indiv);
+                        speciesFound = true;
+                        break;
+                    }
+                }
+                
+                // If no existing species fits the individual, create a new one with the individual as a representative
+                if (!speciesFound) {
+                    Species newSpecies = new Species();
+                    newSpecies.addIndividual(indiv);
+                    representatives.Add(indiv, newSpecies);
+                    species.Add(newSpecies);
+                }
             }
         }
     }
