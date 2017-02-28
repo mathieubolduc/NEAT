@@ -19,7 +19,10 @@ namespace Neat
         }
 
         public Individual getRandomIndividual() {
-            return individuals[Utils.rand.Next(individuals.Count)];
+            if (individuals.Count > 0)
+                return individuals[Utils.rand.Next(individuals.Count)];
+            else
+                return null;
         }
 
         public void clear() {
