@@ -65,7 +65,8 @@ namespace Neat
         }
 
         public override string ToString() {
-            return (source.GetHashCode() + " --(" + weight + ")--> " + dest.GetHashCode());
+            string disabledText = disabled ? "\t(Disabled)" : "";
+            return (source.GetHashCode() + " --(" + weight + ")--> " + dest.GetHashCode() + disabledText);
         }
     }
 }
