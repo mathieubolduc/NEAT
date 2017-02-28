@@ -66,7 +66,9 @@ namespace Neat
 
         public override string ToString() {
             string disabledText = disabled ? "\t(Disabled)" : "";
-            return (source.GetHashCode() + " --(" + weight + ")--> " + dest.GetHashCode() + disabledText);
+            string inputText = (source.getType() == NeuronType.Input) ? "(Input)\t" : "\t";
+            string outputText = (dest.getType() == NeuronType.Output) ? " (Output)" : "";
+            return (inputText + source.GetHashCode() + " --(" + weight + ")--> " + dest.GetHashCode() + outputText + disabledText);
         }
     }
 }
