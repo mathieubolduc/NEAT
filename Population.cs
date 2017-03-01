@@ -38,8 +38,7 @@ namespace Neat
                     champion = indiv;
                 }
             }
-
-            Console.WriteLine(champion);
+            
             return new Tuple<Individual, double>(champion, maxFitness);
         }
 

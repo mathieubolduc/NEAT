@@ -31,6 +31,7 @@ namespace Neat
                 generation++;
                 population.newGeneration();
                 currentFitness = population.getMaxFitness(fitnessFunc);
+                Console.WriteLine(currentFitness.Item1);
                 Console.WriteLine(currentFitness.Item2);
 
                 if (generation == 20)
