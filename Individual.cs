@@ -83,14 +83,13 @@ namespace Neat
 
         public static Individual cross(Individual parent1, Individual parent2, NEATConfig config)
         {
-            // TODO handle disabled connection (use config.disableGeneProb)
             NeuralGraph graph1 = parent1.getGraph();
             NeuralGraph graph2 = parent2.getGraph();
 
             Dictionary<Neuron, Neuron> addedNeurons = new Dictionary<Neuron, Neuron>();
             NeuralGraph child = new NeuralGraph(graph1.getInputNeurons(), graph1.getOutputNeurons());
 
-            // Add neurons from both parents
+            // Add connections from both parents
             List<Connection>.Enumerator it1 = graph1.getConnectionList().GetEnumerator();
             List<Connection>.Enumerator it2 = graph2.getConnectionList().GetEnumerator();
             bool hasNext1 = it1.MoveNext(), hasNext2 = it2.MoveNext();
@@ -114,7 +113,16 @@ namespace Neat
                 int innov2 = it2.Current.getInnovation();
                 if (innov1 == innov2)
                 {
-                    addConnectionInCross(it1.Current, child, addedNeurons);
+                    // If either parent's connection is disable, there is a chance for it to be disabled in the child
+                    bool disabled = false;
+                    if (it1.Current.isDisabled() != it2.Current.isDisabled()) {
+                        disabled = (Utils.rand.NextDouble() < config.disableGeneProb);
+                    }
+                    else if (it1.Current.isDisabled()) {
+                        disabled = true;
+                    }
+
+                    addConnectionInCross(it1.Current, child, addedNeurons, disabled);
                     hasNext1 = it1.MoveNext();
                     hasNext2 = it2.MoveNext();
                 }
@@ -133,7 +141,11 @@ namespace Neat
             return new Individual(child);
         }
 
-        private static void addConnectionInCross(Connection connection, NeuralGraph child, Dictionary<Neuron, Neuron> addedNeurons)
+        private static void addConnectionInCross(Connection connection, NeuralGraph child, Dictionary<Neuron, Neuron> addedNeurons) {
+            addConnectionInCross(connection, child, addedNeurons, connection.isDisabled());
+        }
+
+        private static void addConnectionInCross(Connection connection, NeuralGraph child, Dictionary<Neuron, Neuron> addedNeurons, bool disabled)
         {
             Neuron[] oldNeurons = new Neuron[] { connection.getSource(), connection.getDest() };
             Neuron[] newNeurons = new Neuron[oldNeurons.Length];
@@ -157,8 +169,10 @@ namespace Neat
                     newNeurons[i] = addedNeurons[oldNeurons[i]];
                 }
             }
-            
-            child.addConnection(new Connection(newNeurons[0], newNeurons[1]));
+
+            Connection newConnection = new Connection(newNeurons[0], newNeurons[1]);
+            newConnection.setDisabled(disabled);
+            child.addConnection(newConnection);
         }
 
         public double distanceFrom(Individual indiv, NEATConfig config)

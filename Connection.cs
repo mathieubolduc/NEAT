@@ -55,6 +55,10 @@ namespace Neat
             return disabled;
         }
 
+        public void setDisabled(bool disabled) {
+            this.disabled = disabled;
+        }
+
         public void disable()
         {
             disabled = true;
