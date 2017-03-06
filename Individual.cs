@@ -16,13 +16,16 @@ namespace Neat
             this.graph = graph;
         }
         
-        public void mutate(NEATConfig config)
+        public Individual mutate(NEATConfig config)
         {
+            Individual newIndiv = clone();
+            NeuralGraph newGraph = newIndiv.getGraph();
+
             if (Utils.rand.NextDouble() < config.newConnectionProb) {
                 // Select two random neurons and create (or enable) a link in-between
-                int hiddenCount = graph.getHiddenNeurons().Count();
-                int inputCount = graph.getInputNeurons().Count();
-                int outputCount = graph.getOutputNeurons().Count();
+                int hiddenCount = newGraph.getHiddenNeurons().Count();
+                int inputCount = newGraph.getInputNeurons().Count();
+                int outputCount = newGraph.getOutputNeurons().Count();
 
                 // Select the input and output neurons
                 int sourceIndex = Utils.rand.Next(hiddenCount + inputCount + outputCount);
@@ -30,26 +33,26 @@ namespace Neat
                 Neuron source, dest;
 
                 if (sourceIndex < hiddenCount) {
-                    source = graph.getHiddenNeurons()[sourceIndex];
+                    source = newGraph.getHiddenNeurons()[sourceIndex];
                 }
                 else if (sourceIndex < hiddenCount + inputCount) {
-                    source = graph.getInputNeurons()[sourceIndex - hiddenCount];
+                    source = newGraph.getInputNeurons()[sourceIndex - hiddenCount];
                 }
                 else {
-                    source = graph.getOutputNeurons()[sourceIndex - hiddenCount - inputCount];
+                    source = newGraph.getOutputNeurons()[sourceIndex - hiddenCount - inputCount];
                 }
 
                 if (destIndex < hiddenCount) {
-                    dest = graph.getHiddenNeurons()[destIndex];
+                    dest = newGraph.getHiddenNeurons()[destIndex];
                 }
                 else {
-                    dest = graph.getOutputNeurons()[destIndex - hiddenCount];
+                    dest = newGraph.getOutputNeurons()[destIndex - hiddenCount];
                 }
 
                 Connection connection;
-                if (!graph.getConnections()[dest].TryGetValue(source, out connection)) {
-                    connection = new Connection(source, dest);
-                    graph.addConnection(connection);
+                if (!newGraph.getConnections()[dest].TryGetValue(source, out connection)) {
+                    connection = new Connection(source, dest, -1); // TODO what the crap is the parent innovation supposed to be here
+                    newGraph.addConnection(connection);
                 }
                 else {
                     connection.enable();
@@ -59,17 +62,18 @@ namespace Neat
             if (Utils.rand.NextDouble() < config.newNodeProb) {
                 // When adding a node, disable a connection and replace it by a neuron and two connections
                 // The new input connection to that neuron has weight of 1, while output has same weight as disabled connection
-                Connection connection = graph.getConnectionList()[Utils.rand.Next(graph.getConnectionList().Count)];
+                Connection connection = newGraph.getConnectionList()[Utils.rand.Next(newGraph.getConnectionList().Count)];
                 connection.disable();
                 Neuron neuron = new Neuron(NeuronType.Hidden);
-                Connection newConn1 = new Connection(connection.getSource(), neuron);
-                Connection newConn2 = new Connection(neuron, connection.getDest());
-                graph.addHiddenNeuron(neuron);
-                graph.addConnection(newConn1);
-                graph.addConnection(newConn2);
+                Connection newConn1 = new Connection(connection.getSource(), neuron, connection.getInnovation());
+                Connection newConn2 = new Connection(neuron, connection.getDest(), connection.getInnovation());
+                newGraph.addHiddenNeuron(neuron);
+                newGraph.addConnection(newConn1);
+                newGraph.addConnection(newConn2);
             }
 
-            foreach (Connection connection in graph.getConnectionList()) {
+            // Mutate each connection weight
+            foreach (Connection connection in newGraph.getConnectionList()) {
                 if (Utils.rand.NextDouble() < config.mutationProb) {
                     if (Utils.rand.NextDouble() < config.uniformPerturbationMutationProb) {
                         connection.setWeight(connection.getWeight() + Utils.rand.NextDouble() * 2 * config.perturbationStep - config.perturbationStep);
@@ -79,6 +83,8 @@ namespace Neat
                     }
                 }
             }
+
+            return newIndiv;
         }
 
         public static Individual cross(Individual parent1, Individual parent2, NEATConfig config)
@@ -98,13 +104,13 @@ namespace Neat
             {
                 if (!hasNext1)
                 {
-                    addConnectionInCross(it2.Current, child, addedNeurons);
+                    addClonedConnection(it2.Current, child, addedNeurons);
                     hasNext2 = it2.MoveNext();
                     continue;
                 }
                 if (!hasNext2)
                 {
-                    addConnectionInCross(it1.Current, child, addedNeurons);
+                    addClonedConnection(it1.Current, child, addedNeurons);
                     hasNext1 = it1.MoveNext();
                     continue;
                 }
@@ -122,18 +128,18 @@ namespace Neat
                         disabled = true;
                     }
 
-                    addConnectionInCross(it1.Current, child, addedNeurons, disabled);
+                    addClonedConnection(it1.Current, child, addedNeurons, disabled);
                     hasNext1 = it1.MoveNext();
                     hasNext2 = it2.MoveNext();
                 }
                 else if (innov1 > innov2)
                 {
-                    addConnectionInCross(it2.Current, child, addedNeurons);
+                    addClonedConnection(it2.Current, child, addedNeurons);
                     hasNext2 = it2.MoveNext();
                 }
                 else
                 {
-                    addConnectionInCross(it1.Current, child, addedNeurons);
+                    addClonedConnection(it1.Current, child, addedNeurons);
                     hasNext1 = it1.MoveNext();
                 }
             }   
@@ -141,11 +147,11 @@ namespace Neat
             return new Individual(child);
         }
 
-        private static void addConnectionInCross(Connection connection, NeuralGraph child, Dictionary<Neuron, Neuron> addedNeurons) {
-            addConnectionInCross(connection, child, addedNeurons, connection.isDisabled());
+        private static void addClonedConnection(Connection connection, NeuralGraph child, Dictionary<Neuron, Neuron> addedNeurons) {
+            addClonedConnection(connection, child, addedNeurons, connection.isDisabled());
         }
 
-        private static void addConnectionInCross(Connection connection, NeuralGraph child, Dictionary<Neuron, Neuron> addedNeurons, bool disabled)
+        private static void addClonedConnection(Connection connection, NeuralGraph child, Dictionary<Neuron, Neuron> addedNeurons, bool disabled)
         {
             Neuron[] oldNeurons = new Neuron[] { connection.getSource(), connection.getDest() };
             Neuron[] newNeurons = new Neuron[oldNeurons.Length];
@@ -250,6 +256,18 @@ namespace Neat
         public NeuralGraph getGraph()
         {
             return graph;
+        }
+
+        public Individual clone() {
+            Dictionary<Neuron, Neuron> addedNeurons = new Dictionary<Neuron, Neuron>();
+            NeuralGraph cloneGraph = new NeuralGraph(graph.getInputNeurons(), graph.getOutputNeurons());
+            // TODO !Important! If we allow recurrent connections on outputs, need to clone the outputs too
+
+            foreach (Connection connection in graph.getConnectionList()) {
+                addClonedConnection(connection, cloneGraph, addedNeurons);
+            }
+
+            return new Individual(cloneGraph);
         }
 
         public override string ToString() {
