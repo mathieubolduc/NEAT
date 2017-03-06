@@ -237,8 +237,8 @@ namespace Neat
                     hasNext1 = it1.MoveNext();
                 }
             }
-
-            return (config.c1 * E) / N + (config.c2 * D) / N + (config.c3 * W) / weightCntr;
+            
+            return (config.c1 * E) / N + (config.c2 * D) / N + ((weightCntr > 0) ? ((config.c3 * W) / weightCntr) : 0);
         }
 
         public double[] eval(double[] inputs) {
