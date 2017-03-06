@@ -92,7 +92,7 @@ namespace Neat
             string disabledText = disabled ? "\t(Disabled)" : "";
             string inputText = (source.getType() == NeuronType.Input) ? "(Input)\t" : "\t";
             string outputText = (dest.getType() == NeuronType.Output) ? "\t(Output)" : "\t";
-            return (inputText + source.GetHashCode() + " --(" + weight + ")--> " + dest.GetHashCode() + outputText + disabledText);
+            return (inputText + source.GetHashCode() + " --(" + Math.Round(weight, 2) + ",\t" + innovation + ",\t" + innovationChecked + ",\t" + parentInnovation + ")-->\t" + dest.GetHashCode() + outputText + disabledText);
         }
     }
 }
