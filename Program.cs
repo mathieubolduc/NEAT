@@ -14,7 +14,7 @@ namespace Neat
             NEATConfig config = new NEATConfig();
             NEAT neat = new NEAT(2, 1, config);
 
-            neat.runUntil(15.95, (indiv) => {
+            Individual champion = neat.runUntil(15.95, (indiv) => {
                 double[][] inputs = {
                     new double[] { 0, 0 },
                     new double[] { 0, 1 },

@@ -48,7 +48,7 @@ namespace Neat
                 Console.WriteLine(indiv.getFitness());
             }
 
-            return null;
+            return currentFitness.Item1;
         }
     }
 }
