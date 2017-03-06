@@ -17,7 +17,7 @@ namespace Neat
         public float uniformPerturbationMutationProb = 0.9f; // In the remaining 10%, the weights are assigned a new random value
         public float perturbationStep = 1f;
         public int populationSize = 150;
-        public int minSpeciesSizeForChampion = 5;
+        public int nbChampionsPerSpecies = 5;
         public int timeToKillStagnant = 15; // If the max fitness of a species does not increase in this number of generation, it goes extinct
         // TODO  "In each generation, 25% of offspring resulted from mutation without crossover"
     }

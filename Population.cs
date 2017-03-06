@@ -11,7 +11,6 @@ namespace Neat
         private NEATConfig config;
         private Individual[] individuals;
         private List<Species> species = new List<Species>();
-        private int generation;
 
         public Population(int nbInputs, int nbOutputs, NEATConfig config)
         {
@@ -43,15 +42,46 @@ namespace Neat
         }
 
         public void newGeneration() {
+            speciate();
+            // TODO remove stagnant species (config.timeToKillStagnant)
+            int nbChampions = pickChampions();
+            Console.WriteLine(nbChampions);
+
+            // For the remaining free spots in the population, perform mutations and crossovers
+            for (int i = nbChampions; i < individuals.Length; i++) {
+                if (Utils.rand.NextDouble() < config.interspeciesMatingRate) { // TODO missing config for matingRate?
+                    // This is currently unaware of species...
+                    Individual i1 = getRandomIndividual(nbChampions);
+                    Individual i2 = getRandomIndividual(nbChampions);
+                    individuals[i] = Individual.cross(i1, i2, config);
+                }
+                else {
+                    individuals[i] = getRandomIndividual(nbChampions).mutate(config);
+                }
+            }
+
+            // match innovation numbers between individuals
+            matchInnovationNumbers();
+        }
+
+        public int pickChampions() {
+            int index = 0;
+            foreach(Species singleSpecies in species) {
+                Individual[] champions = singleSpecies.getChampions(config.nbChampionsPerSpecies);
+                foreach (Individual champion in champions) {
+                    individuals[index] = champion;
+                    index++;
+                }
+            }
+
+            return index; // Return the total number of champions
+        }
+
+        public void matchInnovationNumbers() {
             foreach(Individual indiv in individuals) {
-                speciate();
-                // TODO remove stagnant species (config.timeToKillStagnant)
-                // TODO pick champions of each species
-                // TODO crossover within and outside of species
+                foreach(Connection conn in indiv.getGraph().getConnectionList()) {
 
-                indiv.mutate(config);
-
-                // TODO match innovation numbers between individuals
+                }
             }
         }
 
@@ -89,6 +119,14 @@ namespace Neat
                     species.Add(newSpecies);
                 }
             }
+        }
+
+        public Individual getRandomIndividual(int maxIndex) {
+            return individuals[Utils.rand.Next(maxIndex)];
+        }
+
+        public Individual[] getIndividuals() {
+            return individuals;
         }
     }
 }

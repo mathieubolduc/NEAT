@@ -25,6 +25,10 @@ namespace Neat
                 return null;
         }
 
+        public Individual[] getChampions(int nbChampions) {
+            return individuals.OrderByDescending(o => o.getFitness()).Take(nbChampions).ToArray();
+        }
+
         public void clear() {
             individuals.Clear();
         }
