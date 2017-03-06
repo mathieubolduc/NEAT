@@ -29,6 +29,8 @@ namespace Neat
             while (currentFitness.Item2 < desiredFitness) {
                 // Create a new generation
                 generation++;
+                Console.WriteLine("Generation " + generation);
+
                 population.newGeneration();
                 currentFitness = population.getMaxFitness(fitnessFunc);
                 Console.WriteLine(currentFitness.Item1);
@@ -36,7 +38,16 @@ namespace Neat
 
                 if (generation == 20)
                     break;
+                   
             }
+
+            // Print the final population
+            foreach (Individual indiv in population.getIndividuals().OrderBy(o => o.getFitness()))
+            {
+                Console.WriteLine(indiv);
+                Console.WriteLine(indiv.getFitness());
+            }
+
             return null;
         }
     }
