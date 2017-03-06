@@ -170,9 +170,17 @@ namespace Neat
                 }
             }
 
-            Connection newConnection = new Connection(newNeurons[0], newNeurons[1]);
-            newConnection.setDisabled(disabled);
-            child.addConnection(newConnection);
+            Dictionary<Neuron, Dictionary<Neuron, Connection>> childConnections = child.getConnections();
+            if (childConnections.ContainsKey(newNeurons[1]) && childConnections[newNeurons[1]].ContainsKey(newNeurons[0])) {
+                // If the link already exists, enable it
+                if (!disabled)
+                    childConnections[newNeurons[1]][newNeurons[0]].enable();
+            }
+            else {
+                Connection newConnection = new Connection(newNeurons[0], newNeurons[1], connection.getParentInnovation(), connection.getInnovation(), true);
+                newConnection.setDisabled(disabled);
+                child.addConnection(newConnection);
+            }
         }
 
         public double distanceFrom(Individual indiv, NEATConfig config)

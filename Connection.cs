@@ -16,12 +16,20 @@ namespace Neat
         private int innovation;
         private bool disabled = false;
 
-        public Connection(Neuron source, Neuron dest) : this(source, dest, innovation_cntr++) { }
+        private bool innovationChecked = false;
+        private int parentInnovation = -1;
 
-        public Connection(Neuron source, Neuron dest, int innovation) {
+        public Connection(Neuron source, Neuron dest, int parentInnovation) : this(source, dest, parentInnovation, innovation_cntr + 1, false) { }
+
+        public Connection(Neuron source, Neuron dest, int parentInnovation, int innovation, bool innovationChecked) {
             this.source = source;
             this.dest = dest;
+            this.parentInnovation = parentInnovation;
             this.innovation = innovation;
+            if (innovation_cntr < innovation) {
+                innovation_cntr = innovation;
+            }
+            this.innovationChecked = innovationChecked;
             weight = Utils.nextGaussian(0, 1);
         }
 
@@ -66,6 +74,18 @@ namespace Neat
 
         public void enable() {
             disabled = false;
+        }
+
+        public bool isInnovationChecked() {
+            return innovationChecked;
+        }
+
+        public void setInnovationChecked(bool innovationChecked) {
+            this.innovationChecked = innovationChecked;
+        }
+
+        public int getParentInnovation() {
+            return parentInnovation;
         }
 
         public override string ToString() {

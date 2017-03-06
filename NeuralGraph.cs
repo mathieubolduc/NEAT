@@ -55,7 +55,7 @@ namespace Neat
             {
                 foreach (Neuron output in graph.getOutputNeurons())
                 {
-                    graph.addConnection(new Connection(input, output, innovation++));
+                    graph.addConnection(new Connection(input, output, -1, innovation++, true));
                 }
             }
 
