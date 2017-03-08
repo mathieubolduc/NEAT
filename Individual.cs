@@ -119,7 +119,7 @@ namespace Neat
                 int innov2 = it2.Current.getInnovation();
                 if (innov1 == innov2)
                 {
-                    // If either parent's connection is disable, there is a chance for it to be disabled in the child
+                    // If either parent's connection is disabled, there is a chance for it to be disabled in the child
                     bool disabled = false;
                     if (it1.Current.isDisabled() != it2.Current.isDisabled()) {
                         disabled = (Utils.rand.NextDouble() < config.disableGeneProb);
@@ -128,7 +128,8 @@ namespace Neat
                         disabled = true;
                     }
 
-                    addClonedConnection(it1.Current, child, addedNeurons, disabled);
+                    Connection connectionToAdd = (Utils.rand.NextDouble() < 0.5) ? it1.Current : it2.Current;
+                    addClonedConnection(connectionToAdd, child, addedNeurons, disabled);
                     hasNext1 = it1.MoveNext();
                     hasNext2 = it2.MoveNext();
                 }
