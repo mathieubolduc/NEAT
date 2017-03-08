@@ -25,7 +25,7 @@ namespace Neat
             }
         }
 
-        public Tuple<Individual, double> getMaxFitness(Func<Individual, double> fitnessFunc) {
+        public Individual getMaxFitness(Func<Individual, double> fitnessFunc) {
             double maxFitness = double.MinValue;
             Individual champion = null;
 
@@ -38,7 +38,7 @@ namespace Neat
                 }
             }
             
-            return new Tuple<Individual, double>(champion, maxFitness);
+            return champion;
         }
 
         public void newGeneration() {

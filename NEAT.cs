@@ -24,17 +24,17 @@ namespace Neat
 
         public Individual runUntil(double desiredFitness, Func<Individual, double> fitnessFunc)
         {
-            Tuple<Individual, double> currentFitness = population.getMaxFitness(fitnessFunc);
-            Console.WriteLine(currentFitness.Item2);
-            while (currentFitness.Item2 < desiredFitness) {
+            Individual champion = population.getMaxFitness(fitnessFunc);
+            Console.WriteLine(champion.getFitness());
+            while (champion.getFitness() < desiredFitness) {
                 // Create a new generation
                 generation++;
                 Console.WriteLine("Generation " + generation);
 
                 population.newGeneration();
-                currentFitness = population.getMaxFitness(fitnessFunc);
-                Console.WriteLine(currentFitness.Item1);
-                Console.WriteLine(currentFitness.Item2);
+                champion = population.getMaxFitness(fitnessFunc);
+                Console.WriteLine(champion);
+                Console.WriteLine(champion.getFitness());
 
                 if (generation == 20)
                     break;
@@ -48,7 +48,7 @@ namespace Neat
                 Console.WriteLine(indiv.getFitness());
             }
 
-            return currentFitness.Item1;
+            return champion;
         }
     }
 }
